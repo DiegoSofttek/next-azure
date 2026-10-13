@@ -1,0 +1,31 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "pnpm run clean && tsc",
+    "dev": "pnpm run build && concurrently -k -n TSC,FUNC -c cyan,green \"pnpm run watch\" \"pnpm run start\"",
+    "watch": "tsc -w",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "start": "dotenv -e ../../.env -- func start",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "@sendgrid/mail": "^8.1.6",
+    "@workspace/db": "workspace:*",
+    "@workspace/shared": "workspace:*",
+    "jose": "^6.2.3",
+    "twilio": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.x",
+    "azure-functions-core-tools": "^4.x",
+    "concurrently": "^9.2.1",
+    "dotenv-cli": "^11.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.5"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@workspace/infra",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local infrastructure (Docker Compose)",
+  "scripts": {
+    "infra:up": "docker compose --env-file ../.env up -d",
+    "infra:down": "docker compose --env-file ../.env down",
+    "infra:restart": "docker compose --env-file ../.env down || true && docker compose --env-file ../.env up -d",
+    "dev": "pnpm run infra:up"
+  }
+}

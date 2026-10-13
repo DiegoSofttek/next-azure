@@ -1,0 +1,79 @@
+{
+  "version": "2",
+  "dialect": "mssql",
+  "id": "abbdae66-8d61-4d48-b2f6-e258fa39efdf",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "name": "test_table",
+      "entityType": "tables",
+      "schema": "dbo"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": {
+        "seed": 1,
+        "increment": 1
+      },
+      "name": "id",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "test_table"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "project_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "test_table"
+    },
+    {
+      "type": "nvarchar(50)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "environment",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "test_table"
+    },
+    {
+      "type": "nvarchar(200)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "integrations",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "test_table"
+    },
+    {
+      "type": "datetime2",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "test_table"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "id"
+      ],
+      "name": "test_table_pkey",
+      "table": "test_table",
+      "schema": "dbo",
+      "entityType": "pks"
+    }
+  ],
+  "renames": []
+}
