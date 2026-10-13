@@ -147,41 +147,68 @@ function AlertDialogDescription({
   )
 }
 
-function AlertDialogAction({
+type AlertDialogButtonProps = Pick<
+  React.ComponentProps<typeof Button>,
+  "variant" | "size"
+>
+
+type AlertDialogButtonWrapperProps = AlertDialogButtonProps & {
+  className?: string
+  slot: string
+  primitive: React.ReactElement
+}
+
+function AlertDialogButton({
   className,
-  variant = "default",
+  variant,
   size = "default",
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+  slot,
+  primitive,
+}: AlertDialogButtonWrapperProps) {
   return (
     <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Action
-        data-slot="alert-dialog-action"
-        className={cn(className)}
-        {...props}
-      />
+      {React.cloneElement(primitive, {
+        "data-slot": slot,
+        className: cn(className),
+      })}
     </Button>
   )
 }
 
-function AlertDialogCancel({
-  className,
-  variant = "outline",
-  size = "default",
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
-  return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Cancel
-        data-slot="alert-dialog-cancel"
-        className={cn(className)}
-        {...props}
+function createAlertDialogButton<T extends AlertDialogButtonProps>(
+  Primitive: (props: T) => React.ReactNode,
+  slot: string,
+  defaultVariant: NonNullable<AlertDialogButtonProps["variant"]>
+) {
+  return function AlertDialogButtonComponent({
+    className,
+    variant = defaultVariant,
+    size = "default",
+    ...props
+  }: T & AlertDialogButtonProps) {
+    return (
+      <AlertDialogButton
+        className={className}
+        variant={variant}
+        size={size}
+        slot={slot}
+        primitive={<Primitive {...(props as T)} />}
       />
-    </Button>
-  )
+    )
+  }
 }
+
+const AlertDialogAction = createAlertDialogButton(
+  AlertDialogPrimitive.Action,
+  "alert-dialog-action",
+  "default"
+)
+
+const AlertDialogCancel = createAlertDialogButton(
+  AlertDialogPrimitive.Cancel,
+  "alert-dialog-cancel",
+  "outline"
+)
 
 export {
   AlertDialog,

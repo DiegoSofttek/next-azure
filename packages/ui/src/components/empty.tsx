@@ -55,10 +55,18 @@ function EmptyMedia({
   )
 }
 
+function EmptyTextSlot({
+  slot,
+  className,
+  ...props
+}: React.ComponentProps<"div"> & { slot: string }) {
+  return <div data-slot={slot} className={className} {...props} />
+}
+
 function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="empty-title"
+    <EmptyTextSlot
+      slot="empty-title"
       className={cn(
         "font-heading text-sm font-medium tracking-tight",
         className
@@ -70,8 +78,8 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
 
 function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
-    <div
-      data-slot="empty-description"
+    <EmptyTextSlot
+      slot="empty-description"
       className={cn(
         "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
         className

@@ -6,6 +6,23 @@ import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
 import { cn } from "@workspace/ui/lib/utils"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
 
+function DropdownMenuItemIndicator({
+  slot,
+}: {
+  slot: "dropdown-menu-checkbox-item-indicator" | "dropdown-menu-radio-item-indicator"
+}) {
+  return (
+    <span
+      className="pointer-events-none absolute right-2 flex items-center justify-center"
+      data-slot={slot}
+    >
+      <DropdownMenuPrimitive.ItemIndicator>
+        <CheckIcon />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+  )
+}
+
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
@@ -101,15 +118,7 @@ function DropdownMenuCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
-        data-slot="dropdown-menu-checkbox-item-indicator"
-      >
-        <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
-        </DropdownMenuPrimitive.ItemIndicator>
-      </span>
+      <DropdownMenuItemIndicator slot="dropdown-menu-checkbox-item-indicator" />
       {children}
     </DropdownMenuPrimitive.CheckboxItem>
   )
@@ -144,15 +153,7 @@ function DropdownMenuRadioItem({
       )}
       {...props}
     >
-      <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
-        data-slot="dropdown-menu-radio-item-indicator"
-      >
-        <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
-        </DropdownMenuPrimitive.ItemIndicator>
-      </span>
+      <DropdownMenuItemIndicator slot="dropdown-menu-radio-item-indicator" />
       {children}
     </DropdownMenuPrimitive.RadioItem>
   )

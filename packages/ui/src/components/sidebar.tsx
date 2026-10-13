@@ -675,6 +675,7 @@ function SidebarMenuSubButton({
 }
 
 export {
+  sidebarMenuButtonVariants,
   Sidebar,
   SidebarContent,
   SidebarFooter,

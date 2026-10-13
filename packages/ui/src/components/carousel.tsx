@@ -171,6 +171,21 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+function getCarouselButtonPosition(
+  orientation: "horizontal" | "vertical",
+  direction: "previous" | "next"
+) {
+  if (orientation === "horizontal") {
+    return direction === "previous"
+      ? "top-1/2 -left-12 -translate-y-1/2"
+      : "top-1/2 -right-12 -translate-y-1/2"
+  }
+
+  return direction === "previous"
+    ? "-top-12 left-1/2 -translate-x-1/2 rotate-90"
+    : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
+}
+
 function CarouselPrevious({
   className,
   variant = "outline",
@@ -186,9 +201,7 @@ function CarouselPrevious({
       size={size}
       className={cn(
         "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+        getCarouselButtonPosition(orientation, "previous"),
         className
       )}
       disabled={!canScrollPrev}
@@ -216,9 +229,7 @@ function CarouselNext({
       size={size}
       className={cn(
         "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+        getCarouselButtonPosition(orientation, "next"),
         className
       )}
       disabled={!canScrollNext}

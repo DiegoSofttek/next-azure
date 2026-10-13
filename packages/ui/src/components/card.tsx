@@ -2,6 +2,29 @@ import * as React from "react"
 
 import { cn } from "@workspace/ui/lib/utils"
 
+type CardSectionProps = React.ComponentProps<"div">
+
+type CardSectionComponent = React.FC<CardSectionProps>
+
+function createCardSection(slot: string, baseClassName: string): CardSectionComponent {
+  const CardSection: CardSectionComponent = ({ className, ...props }) => {
+    return (
+      <div
+        data-slot={slot}
+        className={cn(baseClassName, className)}
+        {...props}
+      />
+    )
+  }
+
+  CardSection.displayName = `${slot
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("")}`
+
+  return CardSection
+}
+
 function Card({
   className,
   size = "default",
@@ -20,77 +43,35 @@ function Card({
   )
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-header"
-      className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const CardHeader = createCardSection(
+  "card-header",
+  "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3"
+)
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-title"
-      className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const CardTitle = createCardSection(
+  "card-title",
+  "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm"
+)
 
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
-      {...props}
-    />
-  )
-}
+const CardDescription = createCardSection(
+  "card-description",
+  "text-sm text-muted-foreground"
+)
 
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const CardAction = createCardSection(
+  "card-action",
+  "col-start-2 row-span-2 row-start-1 self-start justify-self-end"
+)
 
-function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-content"
-      className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
-      {...props}
-    />
-  )
-}
+const CardContent = createCardSection(
+  "card-content",
+  "px-4 group-data-[size=sm]/card:px-3"
+)
 
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-footer"
-      className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const CardFooter = createCardSection(
+  "card-footer",
+  "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3"
+)
 
 export {
   Card,
