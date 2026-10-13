@@ -55,14 +55,30 @@ function EmptyMedia({
   )
 }
 
-function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyTextBlock({
+  className,
+  slot,
+  baseClassName,
+  ...props
+}: React.ComponentProps<"div"> & {
+  slot: string
+  baseClassName: string
+}) {
   return (
     <div
-      data-slot="empty-title"
-      className={cn(
-        "font-heading text-sm font-medium tracking-tight",
-        className
-      )}
+      data-slot={slot}
+      className={cn(baseClassName, className)}
+      {...props}
+    />
+  )
+}
+
+function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <EmptyTextBlock
+      slot="empty-title"
+      baseClassName="font-heading text-sm font-medium tracking-tight"
+      className={className}
       {...props}
     />
   )
@@ -70,12 +86,10 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
 
 function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
-    <div
-      data-slot="empty-description"
-      className={cn(
-        "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
-        className
-      )}
+    <EmptyTextBlock
+      slot="empty-description"
+      baseClassName="text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
+      className={className}
       {...props}
     />
   )

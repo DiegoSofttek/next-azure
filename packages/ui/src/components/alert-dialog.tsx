@@ -147,41 +147,62 @@ function AlertDialogDescription({
   )
 }
 
-function AlertDialogAction({
+type AlertDialogButtonProps = Pick<
+  React.ComponentProps<typeof Button>,
+  "variant" | "size"
+>
+
+function AlertDialogButton<T extends React.ElementType>({
+  primitive: Primitive,
+  slot,
   className,
-  variant = "default",
+  variant,
   size = "default",
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+}: {
+  primitive: T
+  slot: string
+  className?: string
+} & React.ComponentProps<T> &
+  AlertDialogButtonProps) {
   return (
     <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Action
-        data-slot="alert-dialog-action"
-        className={cn(className)}
-        {...props}
-      />
+      <Primitive data-slot={slot} className={cn(className)} {...props} />
     </Button>
   )
 }
 
-function AlertDialogCancel({
-  className,
-  variant = "outline",
-  size = "default",
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
-  return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Cancel
-        data-slot="alert-dialog-cancel"
-        className={cn(className)}
+function createAlertDialogButton<T extends React.ElementType>(
+  primitive: T,
+  slot: string,
+  defaultVariant: NonNullable<AlertDialogButtonProps["variant"]>
+) {
+  return function AlertDialogButtonComponent({
+    variant = defaultVariant,
+    ...props
+  }: React.ComponentProps<T> & AlertDialogButtonProps) {
+    return (
+      <AlertDialogButton
+        primitive={primitive}
+        slot={slot}
+        variant={variant}
         {...props}
       />
-    </Button>
-  )
+    )
+  }
 }
+
+const AlertDialogAction = createAlertDialogButton(
+  AlertDialogPrimitive.Action,
+  "alert-dialog-action",
+  "default"
+)
+
+const AlertDialogCancel = createAlertDialogButton(
+  AlertDialogPrimitive.Cancel,
+  "alert-dialog-cancel",
+  "outline"
+)
 
 export {
   AlertDialog,

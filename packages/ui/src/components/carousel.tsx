@@ -171,6 +171,24 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+function getCarouselButtonClassName(
+  orientation: "horizontal" | "vertical",
+  direction: "previous" | "next",
+  className?: string
+) {
+  return cn(
+    "absolute touch-manipulation rounded-full",
+    orientation === "horizontal"
+      ? direction === "previous"
+        ? "top-1/2 -left-12 -translate-y-1/2"
+        : "top-1/2 -right-12 -translate-y-1/2"
+      : direction === "previous"
+        ? "-top-12 left-1/2 -translate-x-1/2 rotate-90"
+        : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+    className
+  )
+}
+
 function CarouselPrevious({
   className,
   variant = "outline",
@@ -184,11 +202,9 @@ function CarouselPrevious({
       data-slot="carousel-previous"
       variant={variant}
       size={size}
-      className={cn(
-        "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+      className={getCarouselButtonClassName(
+        orientation,
+        "previous",
         className
       )}
       disabled={!canScrollPrev}
@@ -214,13 +230,7 @@ function CarouselNext({
       data-slot="carousel-next"
       variant={variant}
       size={size}
-      className={cn(
-        "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        className
-      )}
+      className={getCarouselButtonClassName(orientation, "next", className)}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
