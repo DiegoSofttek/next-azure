@@ -12,18 +12,35 @@ import { NextResponse } from "next/server"
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 const IMAGE_CONTENT_TYPE_PREFIX = "image/"
 
+async function authorizeRequest() {
+  const session = await auth()
+  if (!session?.user) {
+    return { ok: false as const, response: NextResponse.json({ message: "Unauthorized" }, { status: 401 }) }
+  }
+
+  const authResult = await requireFunctionsAuth()
+  if (authResult.ok === false) {
+    return { ok: false as const, response: authResult.errorResponse }
+  }
+
+  return {
+    ok: true as const,
+    session,
+    authToken: authResult.authToken,
+  }
+}
+
 function toBase64(bytes: Uint8Array) {
   return Buffer.from(bytes).toString("base64")
 }
 
 export async function POST(request: Request) {
-  const session = await auth()
-  if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+  const authorization = await authorizeRequest()
+  if (!authorization.ok) {
+    return authorization.response
   }
 
-  const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  const { session, authToken } = authorization
 
   const formData = await request.formData()
   const file = formData.get("file")
@@ -47,7 +64,7 @@ export async function POST(request: Request) {
     }
 
     const data = await functionsFetch<UploadDocumentResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken,
       method: "POST",
       json: payload,
       timeoutMs: 20_000,
@@ -60,13 +77,12 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const session = await auth()
-  if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+  const authorization = await authorizeRequest()
+  if (!authorization.ok) {
+    return authorization.response
   }
 
-  const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  const { session, authToken } = authorization
 
   const requestUrl = new URL(request.url)
   const userId = requestUrl.searchParams.get("userId")
@@ -82,7 +98,7 @@ export async function GET(request: Request) {
 
   try {
     const data = await functionsFetch<GetDocumentUrlResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken,
       method: "GET",
       searchParams: { userId, blobName },
     })
