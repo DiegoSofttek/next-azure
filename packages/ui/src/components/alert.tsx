@@ -19,6 +19,26 @@ const alertVariants = cva(
   }
 )
 
+type AlertSectionProps = React.ComponentProps<"div"> & {
+  slot: string
+  baseClassName: string
+}
+
+function AlertSection({
+  className,
+  slot,
+  baseClassName,
+  ...props
+}: AlertSectionProps) {
+  return (
+    <div
+      data-slot={slot}
+      className={cn(baseClassName, className)}
+      {...props}
+    />
+  )
+}
+
 function Alert({
   className,
   variant,
@@ -36,12 +56,10 @@ function Alert({
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-title"
-      className={cn(
-        "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
-        className
-      )}
+    <AlertSection
+      slot="alert-title"
+      baseClassName="font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"
+      className={className}
       {...props}
     />
   )
@@ -52,12 +70,10 @@ function AlertDescription({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-description"
-      className={cn(
-        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
-        className
-      )}
+    <AlertSection
+      slot="alert-description"
+      baseClassName="text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4"
+      className={className}
       {...props}
     />
   )
@@ -65,9 +81,10 @@ function AlertDescription({
 
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-action"
-      className={cn("absolute top-2 right-2", className)}
+    <AlertSection
+      slot="alert-action"
+      baseClassName="absolute top-2 right-2"
+      className={className}
       {...props}
     />
   )
