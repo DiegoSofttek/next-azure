@@ -16,14 +16,25 @@ function toBase64(bytes: Uint8Array) {
   return Buffer.from(bytes).toString("base64")
 }
 
-export async function POST(request: Request) {
+async function authorizeDocumentRequest() {
   const session = await auth()
   if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    return { errorResponse: NextResponse.json({ message: "Unauthorized" }, { status: 401 }) }
   }
 
   const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  if (authResult.ok === false) {
+    return { errorResponse: authResult.errorResponse }
+  }
+
+  return { session, authToken: authResult.authToken }
+}
+
+export async function POST(request: Request) {
+  const authContext = await authorizeDocumentRequest()
+  if ("errorResponse" in authContext) return authContext.errorResponse
+
+  const { session, authToken } = authContext
 
   const formData = await request.formData()
   const file = formData.get("file")
@@ -47,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     const data = await functionsFetch<UploadDocumentResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken,
       method: "POST",
       json: payload,
       timeoutMs: 20_000,
@@ -60,13 +71,10 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const session = await auth()
-  if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
-  }
+  const authContext = await authorizeDocumentRequest()
+  if ("errorResponse" in authContext) return authContext.errorResponse
 
-  const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  const { session, authToken } = authContext
 
   const requestUrl = new URL(request.url)
   const userId = requestUrl.searchParams.get("userId")
@@ -82,7 +90,7 @@ export async function GET(request: Request) {
 
   try {
     const data = await functionsFetch<GetDocumentUrlResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken,
       method: "GET",
       searchParams: { userId, blobName },
     })
