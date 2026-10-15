@@ -10,6 +10,20 @@ describe('Button', () => {
     vi.restoreAllMocks()
   })
 
+  it('renders with default button classes and metadata', () => {
+    render(<Button>Save changes</Button>)
+
+    const button = screen.getByRole('button', { name: 'Save changes' })
+
+    expect(button.getAttribute('data-slot')).toBe('button')
+    expect(button.getAttribute('data-variant')).toBe('default')
+    expect(button.getAttribute('data-size')).toBe('default')
+    expect(button.className).toContain('inline-flex')
+    expect(button.className).toContain('bg-primary')
+    expect(button.className).toContain('text-primary-foreground')
+    expect(button.className).toContain('h-8')
+  })
+
   it('applies destructive variant styles when requested', () => {
     render(<Button variant="destructive">Delete member</Button>)
 
