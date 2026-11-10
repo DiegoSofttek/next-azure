@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
@@ -7,6 +8,10 @@ import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils";
 import { SessionProvider } from "next-auth/react";
 
+
+export const metadata: Metadata = {
+  title: "Home",
+}
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
