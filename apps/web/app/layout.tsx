@@ -9,6 +9,10 @@ import { cn } from "@workspace/ui/lib/utils";
 import { SessionProvider } from "next-auth/react";
 
 
+export const metadata: Metadata = {
+  title: "Workspace",
+}
+
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 const fontMono = Geist_Mono({
