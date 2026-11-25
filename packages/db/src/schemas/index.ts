@@ -14,5 +14,5 @@ export const testTable = mssqlTable("test_table", {
   createdAt: datetime2("created_at").notNull(),
 })
 
-export type TestTable = typeof testTable.$inferSelect
+type TestTable = typeof testTable.$inferSelect
 export type NewTestTable = typeof testTable.$inferInsert
