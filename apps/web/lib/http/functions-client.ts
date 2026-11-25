@@ -9,7 +9,7 @@ interface FunctionsRequestOptions extends RequestInit {
   authToken?: string
 }
 
-export class FunctionsHttpError extends Error {
+class FunctionsHttpError extends Error {
   constructor(
     message: string,
     public readonly status: number,
