@@ -34,10 +34,18 @@ function Alert({
   )
 }
 
+function AlertContent({
+  className,
+  slot,
+  ...props
+}: React.ComponentProps<"div"> & { slot: string }) {
+  return <div data-slot={slot} className={cn(className)} {...props} />
+}
+
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-title"
+    <AlertContent
+      slot="alert-title"
       className={cn(
         "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
         className
@@ -52,8 +60,8 @@ function AlertDescription({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-description"
+    <AlertContent
+      slot="alert-description"
       className={cn(
         "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
         className
