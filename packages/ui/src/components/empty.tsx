@@ -55,14 +55,32 @@ function EmptyMedia({
   )
 }
 
-function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+type EmptySlotProps = React.ComponentProps<"div"> & {
+  slot: string
+  defaultClassName: string
+}
+
+function EmptySlot({
+  slot,
+  defaultClassName,
+  className,
+  ...props
+}: EmptySlotProps) {
   return (
     <div
-      data-slot="empty-title"
-      className={cn(
-        "font-heading text-sm font-medium tracking-tight",
-        className
-      )}
+      data-slot={slot}
+      className={cn(defaultClassName, className)}
+      {...props}
+    />
+  )
+}
+
+function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <EmptySlot
+      slot="empty-title"
+      defaultClassName="font-heading text-sm font-medium tracking-tight"
+      className={className}
       {...props}
     />
   )
@@ -70,12 +88,10 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
 
 function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
-    <div
-      data-slot="empty-description"
-      className={cn(
-        "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
-        className
-      )}
+    <EmptySlot
+      slot="empty-description"
+      defaultClassName="text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
+      className={className}
       {...props}
     />
   )
@@ -83,12 +99,10 @@ function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
 
 function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="empty-content"
-      className={cn(
-        "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance",
-        className
-      )}
+    <EmptySlot
+      slot="empty-content"
+      defaultClassName="flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance"
+      className={className}
       {...props}
     />
   )
