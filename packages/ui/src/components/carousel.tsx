@@ -171,63 +171,82 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CarouselPrevious({
+type CarouselNavigationButtonProps = React.ComponentProps<typeof Button> & {
+  dataSlot: string
+  horizontalClassName: string
+  verticalClassName: string
+  icon: React.ReactNode
+  label: string
+  canScroll: boolean
+  onClick: () => void
+}
+
+function CarouselNavigationButton({
   className,
   variant = "outline",
   size = "icon-sm",
+  dataSlot,
+  horizontalClassName,
+  verticalClassName,
+  icon,
+  label,
+  canScroll,
+  onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+}: CarouselNavigationButtonProps) {
+  const { orientation } = useCarousel()
 
   return (
     <Button
-      data-slot="carousel-previous"
+      data-slot={dataSlot}
       variant={variant}
       size={size}
       className={cn(
         "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+        orientation === "horizontal" ? horizontalClassName : verticalClassName,
         className
       )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      disabled={!canScroll}
+      onClick={onClick}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="sr-only">Previous slide</span>
+      {icon}
+      <span className="sr-only">{label}</span>
     </Button>
   )
 }
 
-function CarouselNext({
-  className,
-  variant = "outline",
-  size = "icon-sm",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel()
+function CarouselPrevious(props: React.ComponentProps<typeof Button>) {
+  const { scrollPrev, canScrollPrev } = useCarousel()
 
   return (
-    <Button
-      data-slot="carousel-next"
-      variant={variant}
-      size={size}
-      className={cn(
-        "absolute touch-manipulation rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        className
-      )}
-      disabled={!canScrollNext}
+    <CarouselNavigationButton
+      dataSlot="carousel-previous"
+      horizontalClassName="top-1/2 -left-12 -translate-y-1/2"
+      verticalClassName="-top-12 left-1/2 -translate-x-1/2 rotate-90"
+      icon={<ChevronLeftIcon />}
+      label="Previous slide"
+      canScroll={canScrollPrev}
+      onClick={scrollPrev}
+      {...props}
+    />
+  )
+}
+
+function CarouselNext(props: React.ComponentProps<typeof Button>) {
+  const { scrollNext, canScrollNext } = useCarousel()
+
+  return (
+    <CarouselNavigationButton
+      dataSlot="carousel-next"
+      horizontalClassName="top-1/2 -right-12 -translate-y-1/2"
+      verticalClassName="-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
+      icon={<ChevronRightIcon />}
+      label="Next slide"
+      canScroll={canScrollNext}
       onClick={scrollNext}
       {...props}
-    >
-      <ChevronRightIcon />
-      <span className="sr-only">Next slide</span>
-    </Button>
+    />
   )
 }
 

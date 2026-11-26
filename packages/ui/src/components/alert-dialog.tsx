@@ -67,13 +67,21 @@ function AlertDialogContent({
   )
 }
 
+function AlertDialogSection({
+  slot,
+  className,
+  ...props
+}: React.ComponentProps<"div"> & { slot: string }) {
+  return <div data-slot={slot} className={cn(className)} {...props} />
+}
+
 function AlertDialogHeader({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-dialog-header"
+    <AlertDialogSection
+      slot="alert-dialog-header"
       className={cn(
         "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-4 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
         className
@@ -88,8 +96,8 @@ function AlertDialogFooter({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-dialog-footer"
+    <AlertDialogSection
+      slot="alert-dialog-footer"
       className={cn(
         "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end",
         className
@@ -104,8 +112,8 @@ function AlertDialogMedia({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="alert-dialog-media"
+    <AlertDialogSection
+      slot="alert-dialog-media"
       className={cn(
         "mb-2 inline-flex size-10 items-center justify-center rounded-md bg-muted sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-6",
         className
@@ -147,6 +155,27 @@ function AlertDialogDescription({
   )
 }
 
+function AlertDialogButton<T extends React.ElementType>({
+  component: Component,
+  slot,
+  className,
+  variant,
+  size,
+  ...props
+}: {
+  component: T
+  slot: string
+  className?: string
+} &
+  Pick<React.ComponentProps<typeof Button>, "variant" | "size"> &
+  React.ComponentPropsWithoutRef<T>) {
+  return (
+    <Button variant={variant} size={size} asChild>
+      <Component data-slot={slot} className={cn(className)} {...props} />
+    </Button>
+  )
+}
+
 function AlertDialogAction({
   className,
   variant = "default",
@@ -155,13 +184,14 @@ function AlertDialogAction({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
   return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Action
-        data-slot="alert-dialog-action"
-        className={cn(className)}
-        {...props}
-      />
-    </Button>
+    <AlertDialogButton
+      component={AlertDialogPrimitive.Action}
+      slot="alert-dialog-action"
+      className={className}
+      variant={variant}
+      size={size}
+      {...props}
+    />
   )
 }
 
@@ -173,13 +203,14 @@ function AlertDialogCancel({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
   return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Cancel
-        data-slot="alert-dialog-cancel"
-        className={cn(className)}
-        {...props}
-      />
-    </Button>
+    <AlertDialogButton
+      component={AlertDialogPrimitive.Cancel}
+      slot="alert-dialog-cancel"
+      className={className}
+      variant={variant}
+      size={size}
+      {...props}
+    />
   )
 }
 

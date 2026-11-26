@@ -81,6 +81,19 @@ function DropdownMenuItem({
   )
 }
 
+function DropdownMenuItemIndicator({ dataSlot }: { dataSlot: string }) {
+  return (
+    <span
+      className="pointer-events-none absolute right-2 flex items-center justify-center"
+      data-slot={dataSlot}
+    >
+      <DropdownMenuPrimitive.ItemIndicator>
+        <CheckIcon />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+  )
+}
+
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -101,15 +114,7 @@ function DropdownMenuCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
-        data-slot="dropdown-menu-checkbox-item-indicator"
-      >
-        <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
-        </DropdownMenuPrimitive.ItemIndicator>
-      </span>
+      <DropdownMenuItemIndicator dataSlot="dropdown-menu-checkbox-item-indicator" />
       {children}
     </DropdownMenuPrimitive.CheckboxItem>
   )
@@ -144,15 +149,7 @@ function DropdownMenuRadioItem({
       )}
       {...props}
     >
-      <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
-        data-slot="dropdown-menu-radio-item-indicator"
-      >
-        <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
-        </DropdownMenuPrimitive.ItemIndicator>
-      </span>
+      <DropdownMenuItemIndicator dataSlot="dropdown-menu-radio-item-indicator" />
       {children}
     </DropdownMenuPrimitive.RadioItem>
   )
