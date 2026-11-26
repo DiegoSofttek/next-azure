@@ -16,14 +16,25 @@ function toBase64(bytes: Uint8Array) {
   return Buffer.from(bytes).toString("base64")
 }
 
-export async function POST(request: Request) {
+async function requireDocumentAccess() {
   const session = await auth()
   if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    return {
+      ok: false as const,
+      errorResponse: NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
+    }
   }
 
+
   const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  if (authResult.ok === false) return authResult
+
+  return { ok: true as const, userId: session.user.sub, authToken: authResult.authToken }
+}
+
+export async function POST(request: Request) {
+  const access = await requireDocumentAccess()
+  if (access.ok === false) return access.errorResponse
 
   const formData = await request.formData()
   const file = formData.get("file")
@@ -40,14 +51,14 @@ export async function POST(request: Request) {
   try {
     const bytes = new Uint8Array(await file.arrayBuffer())
     const payload: UploadDocumentInput = {
-      userId: session.user.sub,
+      userId: access.userId,
       fileName: file.name,
       contentType: file.type,
       base64Data: toBase64(bytes),
     }
 
     const data = await functionsFetch<UploadDocumentResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken: access.authToken,
       method: "POST",
       json: payload,
       timeoutMs: 20_000,
@@ -60,13 +71,8 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const session = await auth()
-  if (!session?.user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
-  }
-
-  const authResult = await requireFunctionsAuth()
-  if (authResult.ok === false) return authResult.errorResponse
+  const access = await requireDocumentAccess()
+  if (access.ok === false) return access.errorResponse
 
   const requestUrl = new URL(request.url)
   const userId = requestUrl.searchParams.get("userId")
@@ -76,13 +82,13 @@ export async function GET(request: Request) {
   }
 
   // Next route authorization layer: only owner can request document URL.
-  if (userId !== session.user.sub) {
+  if (userId !== access.userId) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 })
   }
 
   try {
     const data = await functionsFetch<GetDocumentUrlResponse>(DOCUMENTS_ROUTE, {
-      authToken: authResult.authToken,
+      authToken: access.authToken,
       method: "GET",
       searchParams: { userId, blobName },
     })
